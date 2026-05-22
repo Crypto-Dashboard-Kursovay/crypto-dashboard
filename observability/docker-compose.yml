@@ -10,7 +10,7 @@ services:
   loki:
     image: grafana/loki:3.7.2
     container_name: observability-loki
-    user: "${OBSERVABILITY_UID:-1000}:${OBSERVABILITY_GID:-1000}"
+    user: "${LOKI_UID:-10001}:${LOKI_GID:-10001}"
     command:
       - -config.file=/etc/loki/config.yaml
     volumes:

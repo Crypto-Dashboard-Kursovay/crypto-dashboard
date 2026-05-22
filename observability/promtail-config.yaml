@@ -35,3 +35,10 @@ scrape_configs:
       - source_labels: [__meta_docker_container_id]
         target_label: __path__
         replacement: /var/lib/docker/containers/$1/$1-json.log
+    pipeline_stages:
+      - replace:
+          expression: "token=[^\"& ]+"
+          replace: "token=[redacted]"
+      - replace:
+          expression: "postgresql\\+asyncpg://[^\" ]+"
+          replace: "postgresql+asyncpg://[redacted]"
