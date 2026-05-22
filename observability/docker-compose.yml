@@ -1,0 +1,134 @@
+name: crypto-observability
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  loki:
+    image: grafana/loki:3.7.2
+    container_name: observability-loki
+    user: "${OBSERVABILITY_UID:-1000}:${OBSERVABILITY_GID:-1000}"
+    command:
+      - -config.file=/etc/loki/config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/config.yaml:ro
+      - loki_data:/loki
+    networks:
+      - observability
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 384m
+    cpus: "0.50"
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.50"
+
+  promtail:
+    image: grafana/promtail:3.6.0
+    container_name: observability-promtail
+    command:
+      - -config.file=/etc/promtail/config.yaml
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/config.yaml:ro
+      - promtail_data:/var/lib/promtail
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    networks:
+      - observability
+    depends_on:
+      - loki
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 128m
+    cpus: "0.20"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.20"
+
+  prometheus:
+    image: prom/prometheus:v3.11.3
+    container_name: observability-prometheus
+    user: "${OBSERVABILITY_UID:-1000}:${OBSERVABILITY_GID:-1000}"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+      - --web.enable-lifecycle
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - observability
+      - app_net
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 256m
+    cpus: "0.35"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.35"
+
+  grafana:
+    image: grafana/grafana:13.0.1
+    container_name: observability-grafana
+    user: "${OBSERVABILITY_UID:-1000}:${OBSERVABILITY_GID:-1000}"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:?set GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_SERVER_DOMAIN: ${GF_SERVER_DOMAIN:-promtail.vadim-denisovich.ru}
+      GF_SERVER_ROOT_URL: ${GF_SERVER_ROOT_URL:-https://promtail.vadim-denisovich.ru/}
+      GF_LOG_LEVEL: warn
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    ports:
+      - "127.0.0.1:3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - observability
+      - app_net
+    depends_on:
+      - loki
+      - prometheus
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 256m
+    cpus: "0.35"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.35"
+
+networks:
+  observability:
+    name: crypto_observability
+  app_net:
+    name: ${APP_NETWORK:-nginx_network}
+    external: true
+
+volumes:
+  grafana_data:
+    external: true
+    name: crypto_observability_grafana
+  loki_data:
+    external: true
+    name: crypto_observability_loki
+  prometheus_data:
+    external: true
+    name: crypto_observability_prometheus
+  promtail_data:
+    external: true
+    name: crypto_observability_promtail
