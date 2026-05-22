@@ -62,6 +62,13 @@ services:
     environment:
       BACKEND_DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
       BACKEND_REDIS_URL: redis://redis:6379/0
+      BACKEND_DEV_MODE: ${BACKEND_DEV_MODE:-true}
+      BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-http://localhost:5173}
+      BACKEND_JWT_SECRET: ${BACKEND_JWT_SECRET:-dev-jwt-secret}
+      BACKEND_ENCRYPTION_KEY: ${BACKEND_ENCRYPTION_KEY:-oABjyJTzjDOLVdZfv5z8XXs5-cdCqoiiaJHZEVJAICE=}
+      PYTHONPATH: /opt/engine/src
+      BACKEND_BACKTEST_CMD: python -m backtest_main
+      BACKEND_HISTORICAL_DIR: /data/historical
     depends_on:
       postgres:
         condition: service_healthy
@@ -69,9 +76,13 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+    ports:
+      - "8000:8000"
     volumes:
       - ./backend/src:/app/src
       - ./backend/alembic:/app/alembic
+      - ./trade-engine-crypto:/opt/engine:ro
+      - ./data/historical:/data/historical
     command:
       [
         "uvicorn",
@@ -91,6 +102,9 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:8000/api/}
       VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:8000/ws/updates}
+      VITE_DEV_LOGIN: ${VITE_DEV_LOGIN:-true}
+    ports:
+      - "5173:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -104,6 +118,7 @@ services:
     environment:
       ENGINE_DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
       ENGINE_REDIS_URL: redis://redis:6379/0
+      ENGINE_ENCRYPTION_KEY: ${BACKEND_ENCRYPTION_KEY:-XdW3UBlhvUgOWxaj8etIFloEvm5d1GtJee5L2hp8NXE=}
       ENGINE_METRICS_ENABLED: "true"
       ENGINE_METRICS_HOST: 0.0.0.0
       ENGINE_METRICS_PORT: 9100
