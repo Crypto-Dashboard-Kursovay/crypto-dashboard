@@ -1,0 +1,176 @@
+{
+  "symbol": "BTC/USDT",
+  "timeframe": "1h",
+  "months": {
+    "2025-01": {
+      "train_samples": 4331,
+      "test_samples": 744,
+      "accuracy": 0.754,
+      "total_trades": 72,
+      "sharpe": -0.3536,
+      "profit_factor": 0.5,
+      "win_rate": 0.3333,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-01.joblib"
+    },
+    "2025-02": {
+      "train_samples": 4368,
+      "test_samples": 672,
+      "accuracy": 0.7574,
+      "total_trades": 60,
+      "sharpe": -0.3941,
+      "profit_factor": 0.4634,
+      "win_rate": 0.3167,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-02.joblib"
+    },
+    "2025-03": {
+      "train_samples": 4344,
+      "test_samples": 744,
+      "accuracy": 0.7379,
+      "total_trades": 70,
+      "sharpe": -0.365,
+      "profit_factor": 0.4894,
+      "win_rate": 0.3286,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-03.joblib"
+    },
+    "2025-04": {
+      "train_samples": 4344,
+      "test_samples": 720,
+      "accuracy": 0.7444,
+      "total_trades": 64,
+      "sharpe": -0.8006,
+      "profit_factor": 0.2308,
+      "win_rate": 0.1875,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-04.joblib"
+    },
+    "2025-05": {
+      "train_samples": 4344,
+      "test_samples": 744,
+      "accuracy": 0.7608,
+      "total_trades": 84,
+      "sharpe": -0.6545,
+      "profit_factor": 0.2923,
+      "win_rate": 0.2262,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-05.joblib"
+    },
+    "2025-06": {
+      "train_samples": 4344,
+      "test_samples": 720,
+      "accuracy": 0.8056,
+      "total_trades": 73,
+      "sharpe": -0.588,
+      "profit_factor": 0.3273,
+      "win_rate": 0.2466,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-06.joblib"
+    },
+    "2025-07": {
+      "train_samples": 4344,
+      "test_samples": 744,
+      "accuracy": 0.7688,
+      "total_trades": 64,
+      "sharpe": -0.6271,
+      "profit_factor": 0.3061,
+      "win_rate": 0.2344,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-07.joblib"
+    },
+    "2025-08": {
+      "train_samples": 4344,
+      "test_samples": 744,
+      "accuracy": 0.7903,
+      "total_trades": 47,
+      "sharpe": -0.2407,
+      "profit_factor": 0.6207,
+      "win_rate": 0.383,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-08.joblib"
+    },
+    "2025-09": {
+      "train_samples": 4416,
+      "test_samples": 720,
+      "accuracy": 0.8097,
+      "total_trades": 49,
+      "sharpe": -0.7342,
+      "profit_factor": 0.2564,
+      "win_rate": 0.2041,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-09.joblib"
+    },
+    "2025-10": {
+      "train_samples": 4392,
+      "test_samples": 744,
+      "accuracy": 0.7487,
+      "total_trades": 38,
+      "sharpe": -0.3328,
+      "profit_factor": 0.52,
+      "win_rate": 0.3421,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-10.joblib"
+    },
+    "2025-11": {
+      "train_samples": 4416,
+      "test_samples": 720,
+      "accuracy": 0.7444,
+      "total_trades": 40,
+      "sharpe": -0.4364,
+      "profit_factor": 0.4286,
+      "win_rate": 0.3,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-11.joblib"
+    },
+    "2025-12": {
+      "train_samples": 4392,
+      "test_samples": 744,
+      "accuracy": 0.7944,
+      "total_trades": 41,
+      "sharpe": -0.523,
+      "profit_factor": 0.3667,
+      "win_rate": 0.2683,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2025-12.joblib"
+    },
+    "2026-01": {
+      "train_samples": 4416,
+      "test_samples": 744,
+      "accuracy": 0.8185,
+      "total_trades": 41,
+      "sharpe": -0.6776,
+      "profit_factor": 0.2812,
+      "win_rate": 0.2195,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2026-01.joblib"
+    },
+    "2026-02": {
+      "train_samples": 4416,
+      "test_samples": 672,
+      "accuracy": 0.7143,
+      "total_trades": 44,
+      "sharpe": -0.3356,
+      "profit_factor": 0.5172,
+      "win_rate": 0.3409,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2026-02.joblib"
+    },
+    "2026-03": {
+      "train_samples": 4344,
+      "test_samples": 744,
+      "accuracy": 0.7446,
+      "total_trades": 53,
+      "sharpe": -0.253,
+      "profit_factor": 0.6061,
+      "win_rate": 0.3774,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2026-03.joblib"
+    },
+    "2026-04": {
+      "train_samples": 4368,
+      "test_samples": 720,
+      "accuracy": 0.7861,
+      "total_trades": 68,
+      "sharpe": -0.7854,
+      "profit_factor": 0.2364,
+      "win_rate": 0.1912,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2026-04.joblib"
+    },
+    "2026-05": {
+      "train_samples": 4344,
+      "test_samples": 515,
+      "accuracy": 0.8039,
+      "total_trades": 42,
+      "sharpe": -0.5415,
+      "profit_factor": 0.3548,
+      "win_rate": 0.2619,
+      "model_path": "data/models/ml_rsi/BTC_USDT_1h_2026-05.joblib"
+    }
+  }
+}
