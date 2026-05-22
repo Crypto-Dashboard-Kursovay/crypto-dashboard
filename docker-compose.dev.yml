@@ -86,6 +86,7 @@ services:
       - ./backend/alembic:/app/alembic
       - ./trade-engine-crypto:/opt/engine:ro
       - ./data/historical:/data/historical
+      - ./data/models/ml_rsi:/app/data/models/ml_rsi:ro
     command:
       [
         "uvicorn",

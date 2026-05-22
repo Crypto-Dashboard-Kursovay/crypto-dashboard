@@ -64,6 +64,8 @@ services:
       # Кэш исторических данных: scripts/fetch_historical.py + гибридная докачка
       # движком при бэктесте (нужен rw, чтобы движок мог сохранять parquet-кэш).
       - ./data/historical:/data/historical
+      # ML-модели для стратегии MlRsi: нужны subprocess'у backtest_main.
+      - ./data/models/ml_rsi:/app/data/models/ml_rsi:ro
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:
