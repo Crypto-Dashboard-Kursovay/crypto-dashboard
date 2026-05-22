@@ -59,6 +59,8 @@ services:
       args:
         APP_UID: ${APP_UID:-1000}
         APP_GID: ${APP_GID:-1000}
+    networks:
+      - default
     environment:
       BACKEND_DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
       BACKEND_REDIS_URL: redis://redis:6379/0
@@ -78,6 +80,7 @@ services:
         condition: service_completed_successfully
     ports:
       - "8000:8000"
+    restart: unless-stopped
     volumes:
       - ./backend/src:/app/src
       - ./backend/alembic:/app/alembic
@@ -99,12 +102,16 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
+    networks:
+      - default
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:8000/api/}
       VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:8000/ws/updates}
       VITE_DEV_LOGIN: ${VITE_DEV_LOGIN:-true}
     ports:
       - "5173:5173"
+    depends_on:
+      - backend
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -115,6 +122,8 @@ services:
     image: !reset null
     build:
       context: ./trade-engine-crypto
+    networks:
+      - default
     environment:
       ENGINE_DATABASE_URL: postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
       ENGINE_REDIS_URL: redis://redis:6379/0
@@ -129,7 +138,15 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+    restart: unless-stopped
 
 volumes:
   postgres_data:
   redis_data:
+
+# Переопределяем external-сеть из основного compose'а:
+# локально nginx не нужен — делаем обычную bridge-сеть.
+networks:
+  public:
+    driver: bridge
+    external: false
