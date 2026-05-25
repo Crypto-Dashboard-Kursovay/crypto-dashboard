@@ -1,7 +1,7 @@
 # AGENTS.md — Crypto Dashboard
 
 Гид для AI-агентов и разработчиков по этому проекту. Описывает архитектуру, стек,
-конвенции, команды и **детально — что уже было проделано** (Phase 1–7).
+конвенции, команды и **детально — что уже было проделано** (Phase 1–8).
 
 > Источник истины по архитектурным правилам — `.context/backend-rules.md` и
 > `.context/trade-engine-rules.md` (папка `.context/` не коммитится: репо публичный,
@@ -332,6 +332,27 @@ rate-limit), Telegram HMAC-проверка. Фронт: единая `/login` �
    переживает перезагрузку; бэктест **реалистичный** (симуляция цены + метрики из сделок) и его
    **скорость зависит от ТФ/периода** (`running` → `completed` по таймеру); Claude-style
    анимация ожидания (`BacktestRunningIndicator.tsx`). Итого **98 тестов** зелёные; `pnpm build` ок.
+
+### Phase 8 — Совокупный баланс по биржам
+> Отчёт: `.context/phase-8-balance-aggregation.md`. Правки в backend + engine.
+
+1. **Баланс больше не зависит от running-ботов:** `StateManager` движка теперь опрашивает
+   все сохранённые `exchange_credentials` через `CredentialRepository.list_decrypted()` и
+   публикует `engine.balance_update` по каждому подключённому credential. Позиции по-прежнему
+   опрашиваются только у running-ботов.
+2. **Кеш адаптеров баланса:** для polling'а добавлен отдельный кеш `credential_id → adapter`;
+   удалённые credentials закрывают и удаляют свой adapter, чтобы не держать старые ключи и
+   сетевые соединения.
+3. **Binance balance fix:** `CCXTExchangeAdapter.get_balance()` для Binance Spot Testnet
+   ходит напрямую в `privateGetAccount` и парсит `balances.free/locked`, обходя
+   `fetch_balance()` и связанный с ним `load_markets()`.
+4. **USDT-оценка в backend:** `/api/balances/summary` теперь считает `total_equity`,
+   `free_total`, `used_total` как USDT-стоимость всех последних балансов подключённых бирж.
+   `USDT = 1`, для `BTC/SOL/XRP/BNB/ETH` цена берётся через публичный `fetch_ticker` с
+   Redis-кэшем 60с; `currencies` остаётся сырым списком валютных балансов.
+5. **Корректный latest-снапшот:** `BalanceRepository.latest_for_credential()` выбирает
+   последний снапшот по каждой валюте через SQL window function, а не через лимит последних
+   100 строк и Python-дедупликацию.
 
 ---
 
