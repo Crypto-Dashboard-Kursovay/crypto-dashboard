@@ -354,6 +354,27 @@ rate-limit), Telegram HMAC-проверка. Фронт: единая `/login` �
    последний снапшот по каждой валюте через SQL window function, а не через лимит последних
    100 строк и Python-дедупликацию.
 
+### Phase 9 — Запуск стратегий, живой бэктест, быстрый баланс
+> План: `.context/phase-9-trading-backtest-balance-plan.md`. Отчёт:
+> `.context/phase-9-trading-backtest-balance-implementation.md`. Правки в engine,
+> backend, frontend и compose.
+
+1. **Надёжные команды движку:** Redis Pub/Sub остался быстрым путём, но движок теперь
+   дополнительно читает pending `bot_commands` из PostgreSQL примерно раз в секунду и
+   помечает `processed_at` после обработки. Это закрывает зависание `Запускается`, когда
+   Redis-сообщение было потеряно или движок был не подписан.
+2. **Защита от replay старых команд:** backlog ограничен свежими и статусно-релевантными
+   командами, чтобы после деплоя не переиграть исторические строки, у которых раньше не
+   заполнялся `processed_at`.
+3. **Быстрый статус запуска:** backend по engine log `strategy_started` сразу переводит
+   бота в `RUNNING`; heartbeat-проекция очищена от дублирующегося блока.
+4. **Бэктест переживает навигацию:** страница бэктеста сохраняет активный job id в
+   `localStorage`, восстанавливает `queued/running` job при возврате и продолжает polling;
+   после `completed/failed` active-key очищается, результат остаётся видимым.
+5. **Баланс обновляется быстрее:** default polling движка и `BalanceWidget` снижен до 5с,
+   frontend также обновляет баланс по focus/visibilitychange и по WS-сигналу
+   `balance_update` из `LogsContext`.
+
 ---
 
 ## 10. Известные ограничения / отложено
